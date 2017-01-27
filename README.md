@@ -34,6 +34,11 @@ Retains camera position and orientation through scene reloads.
 <a-scene retain-camera></a-scene>
 ```
 
+| Key           | Description
+| ------------- | -------------
+| ` | reset to original camera.
+
+
 ### npm
 
 Install via npm:
