@@ -39,6 +39,22 @@ Retains camera position and orientation through scene reloads.
 | ` | reset to original camera.
 
 
+#### axis
+
+Adds axis helper to entity.   Makes it easier to visualize the objects position and orientation in scene.
+
+```html
+<a-entity axis></a-axis>
+```
+
+| Property      | Description   | Default
+| ------------- | ------------- | ----
+| size | size of line representing axis | 1
+
+
+See three.js docs [AxisHelper](https://threejs.org/docs/?q=axis#Reference/Helpers/AxisHelper)
+
+
 ### npm
 
 Install via npm:
