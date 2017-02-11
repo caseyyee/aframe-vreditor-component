@@ -6,12 +6,21 @@
   </head>
   <body>
     <a-scene retain-camera>
-      <a-sphere bb position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
-      <a-box axis position="-1 0.5 1" rotation="0 45 0" width="1" height="1" depth="1"  color="#4CC3D9"></a-box>
-      <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+      <a-entity cloneable>
+        <!-- <a-sphere position="0 1 0" radius="0.2" color="#EF2D5E"></a-sphere> -->
+        <a-box position="0 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#333333"></a-box>
+        <a-box position="0.3 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#4CC3D9"></a-box>
+        <a-box position="0.6 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#D75647"></a-box>
+        <a-box position="0.9 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#8ADE5C"></a-box>
+        <!-- <a-cylinder position="1 0.75 1" radius="0.25" height="0.5" color="#FFC65D"></a-cylinder> -->
+      </a-entity>
       <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
 
-      <a-sky color="#ECECEC"></a-sky>
+      <!-- Hands -->
+      <a-entity hand-controls="left"></a-entity>
+      <a-entity hand-controls="right"></a-entity>
+
+      <a-sky color="#333"></a-sky>
     </a-scene>
 
     <!-- GitHub Corner. -->

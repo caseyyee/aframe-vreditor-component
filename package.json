@@ -67,5 +67,7 @@
       "examples/build.js",
       "dist/**"
     ]
+  },
+  "dependencies": {
   }
 }
