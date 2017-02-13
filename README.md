@@ -55,6 +55,18 @@ Adds axis helper to entity.   Makes it easier to visualize the objects position 
 See three.js docs [AxisHelper](https://threejs.org/docs/?q=axis#Reference/Helpers/AxisHelper)
 
 
+#### bounding-box
+
+draws bounding box around entity mesh.
+
+```html
+<a-entity bbs></a-axis>
+
+```
+
+See three.js docs [BoxHelper](https://threejs.org/docs/?q=box#Reference/Helpers/BoxHelper)
+
+
 ### npm
 
 Install via npm:
