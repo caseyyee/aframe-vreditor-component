@@ -48,6 +48,7 @@
 
 	AFRAME.registerComponent('retain-camera', __webpack_require__(5));
 
+	AFRAME.registerComponent('axis', __webpack_require__(6));
 
 /***/ },
 /* 1 */
@@ -70086,6 +70087,22 @@
 
 	    camera.setAttribute('position', position);
 	    camera.setAttribute('rotation', rotation);
+	  }
+	};
+
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  schema: {
+	    size: { type: 'number', default: 1 }
+	  },
+	  init: function () {
+	    var axisHelper = new THREE.AxisHelper( this.data.size );
+	    this.el.object3D.add(axisHelper);
 	  }
 	};
 
