@@ -6,7 +6,7 @@
   </head>
   <body>
     <a-scene retain-camera>
-      <a-entity cloneable>
+      <a-entity scale-axis>
 
 
         <!-- <a-sphere position="0 1 0" radius="0.2" color="#EF2D5E"></a-sphere>
@@ -18,12 +18,26 @@
         <a-box position="0.9 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#8ADE5C"></a-box> -->
 
 
-        <a-box bb position="-0.5 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#4CC3D9"></a-box>
-        <a-box bb position="0.5 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#D75647"></a-box>
-        
+        <a-box axis id="left" position="-0.5 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#4CC3D9">
+          <a-animation attribute="position"
+               dur="1000"
+               direction="alternate"
+               fill="forwards"
+               to="-1.5 1 0"
+               repeat="indefinite"></a-animation>
+        </a-box>
+        <a-box axis id="right" position="0.5 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#D75647">
+          <a-animation attribute="position"
+               dur="1000"
+               direction="alternate"
+               fill="forwards"
+               to="1.5 1 0"
+               repeat="indefinite"></a-animation>
+        </a-box>
+        <a-box axis id="target" position="0 0.5 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="red">
 
       </a-entity>
-      <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <!-- <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane> -->
 
       <!-- Hands -->
       <a-entity hand-controls="left"></a-entity>

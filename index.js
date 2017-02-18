@@ -11,3 +11,5 @@ AFRAME.registerComponent('controllable', require('./src/controllable'));
 AFRAME.registerComponent('selected', require('./src/selected'));
 
 AFRAME.registerComponent('cloneable', require('./src/cloneable'));
+
+AFRAME.registerComponent('scale-axis', require('./src/scale-axis'));
