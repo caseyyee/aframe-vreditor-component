@@ -60,7 +60,7 @@ See three.js docs [AxisHelper](https://threejs.org/docs/?q=axis#Reference/Helper
 draws bounding box around entity mesh.
 
 ```html
-<a-entity bbs></a-axis>
+<a-entity bb></a-axis>
 
 ```
 
