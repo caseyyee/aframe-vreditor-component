@@ -70,7 +70,7 @@ module.exports = {
       else {
         self.clearSelected();
         // add selector off last element edited.
-        grab.el.setAttribute('selected','');
+        // grab.el.setAttribute('selected','');
         self.selected = grab.el;
       }
     });
@@ -80,10 +80,10 @@ module.exports = {
   },
 
   clearSelected: function() {
-    var selected = Array.prototype.slice.call(this.el.querySelectorAll('[selected]'));
-    selected.forEach(function (el) {
-      el.removeAttribute('selected');
-    });
+    // var selected = Array.prototype.slice.call(this.el.querySelectorAll('[selected]'));
+    // selected.forEach(function (el) {
+    //   el.removeAttribute('selected');
+    // });
 
     self.selected = null;
   },

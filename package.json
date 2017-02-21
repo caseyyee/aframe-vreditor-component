@@ -1,13 +1,13 @@
 {
-  "name": "aframe-dev-components",
+  "name": "aframe-vreditor-component",
   "version": "1.0.0",
-  "description": "Helpers for making A-Frame fun to work with.",
+  "description": "VR Editor for A-Frame.",
   "main": "index.js",
-  "cdn": "dist/aframe-dev-components.min.js",
+  "cdn": "dist/aframe-vreditor-component.min.js",
   "scripts": {
     "build": "browserify examples/main.js -o examples/build.js",
     "dev": "budo examples/main.js:build.js --dir examples --port 8000 --live --open",
-    "dist": "webpack index.js dist/aframe-dev-components.js && webpack -p index.js dist/aframe-dev-components.min.js",
+    "dist": "webpack index.js dist/aframe-vreditor-component.js && webpack -p index.js dist/aframe-vreditor-component.min.js",
     "lint": "semistandard -v | snazzy",
     "prepublish": "npm run dist",
     "preghpages": "npm run build && shx rm -rf gh-pages && shx mkdir gh-pages && shx cp -r examples/* gh-pages",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caseyyee/aframe-dev-components.git"
+    "url": "git+https://github.com/caseyyee/aframe-vreditor-component.git"
   },
   "keywords": [
     "aframe",
@@ -33,9 +33,9 @@
   "author": "Casey Yee <caseyyee.ca@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/caseyyee/aframe-dev-components/issues"
+    "url": "https://github.com/caseyyee/aframe-vreditor-component/issues"
   },
-  "homepage": "https://github.com/caseyyee/aframe-dev-components#readme",
+  "homepage": "https://github.com/caseyyee/aframe-vreditor-component#readme",
   "devDependencies": {
     "aframe": "^0.5.0",
     "browserify": "^13.0.0",
@@ -69,5 +69,6 @@
     ]
   },
   "dependencies": {
+    "aframe-dev-components": "git://github.com/caseyyee/aframe-dev-components.git"
   }
 }
