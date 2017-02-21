@@ -6,55 +6,41 @@ module.exports = {
   multiple: false,
 
   init: function () {
-    this.controllers = Array.prototype.slice.call(document.querySelectorAll('a-entity[hand-controls]'));
-
-    this.controllers = this.controllers.map(function (controller) {
+    var controllers = Array.prototype.slice.call(document.querySelectorAll('a-entity[hand-controls]'));
+    this.controllers = controllers.map(function (controller) {
       return {
         el: controller,
         lastPosition: new THREE.Vector3(), /* last position of controller */
-        positionDelta: new THREE.Vector3(), /* delta between current position and last position */
-        movementAxis: 0 /* dominant movement axis */
+        positionDelta: new THREE.Vector3() /* delta between current position and last position */
       }
     });
 
     this.grabbed = [];
     this.gripped = [];
     this.selected = null;
-
-    this.debugEl = document.querySelector('#debug');
   },
 
   play: function () {
-    // this.grabbed = false;
     this.controllers.forEach(function (controller) {
       controller.el.addEventListener('gripclose', this.onGripClose.bind(this));
       controller.el.addEventListener('gripopen', this.onGripOpen.bind(this));
     }.bind(this));
-
-    // // handle collision dection (should be on triggerDown)
-    // this.handles.forEach(function(handle) {
-    //   var handleBB = new THREE.Box3().setFromObject(handle);
-    //   // controller BB
-    //   // collision detect
-    // });
-  },
-
-  update: function () {
   },
 
   pause: function () {
-    // this.controllers.forEach(function (controller) {
-    //   controller.removeEventListener('triggerdown', this.onGripClose.bind(this));
-    //   controller.removeEventListener('triggerup', this.onGripOpen.bind(this));
-    // }.bind(this));
+    this.controllers.forEach(function (controller) {
+      controller.removeEventListener('triggerdown', this.onGripClose.bind(this));
+      controller.removeEventListener('triggerup', this.onGripOpen.bind(this));
+    }.bind(this));
   },
+
   onGripClose: function (e) {
     var self = this;
     var hand = e.target;
     var hand3D = e.target.object3D;
     var handBB = new THREE.Box3().setFromObject(hand3D);
 
-    var els =  Array.prototype.slice.call(this.el.children);
+    var els = Array.prototype.slice.call(this.el.children);
     els.forEach(function (el) {
       if (el === hand) return;
       if (el.getObject3D === undefined) return;
@@ -102,65 +88,25 @@ module.exports = {
     self.selected = null;
   },
 
-  tick: function (time) {
-    var controllers = this.controllers;
-    controllers.forEach(function (controller) {
+  updateControllerPosition: function () {
+    this.controllers.forEach(function (controller) {
       var position = controller.el.getAttribute('position');
       controller.positionDelta.x = position.x - controller.lastPosition.x;
       controller.positionDelta.y = position.y - controller.lastPosition.y;
       controller.positionDelta.z = position.z - controller.lastPosition.z;
-
       controller.lastPosition.x = position.x;
       controller.lastPosition.y = position.y;
       controller.lastPosition.z = position.z;
     });
+  },
 
+  tick: function (time) {
+    this.updateControllerPosition();
 
-    var ControlVec1 = new THREE.Vector3().set(controllers[0].positionDelta.x,
-      controllers[0].positionDelta.y,
-      controllers[0].positionDelta.z);
-    var ControlVec2 = new THREE.Vector3().set(controllers[1].positionDelta.x,
-      controllers[1].positionDelta.y,
-      controllers[1].positionDelta.z);
-
-    ControlVec1.normalize();
-    ControlVec2.normalize();
-
-    var dot = ControlVec1.dot(ControlVec2);
-    var threshold = 0.8;
-    if (dot > threshold) {
-      // console.log('controllers are pallel and moving same direction');
-    } else if (dot < -threshold) {
-      // console.log('controllers are parallel, but opposite directions');
-      // we're scaling!
-    }
-
-
-    // track center point between controllers
-    var ControlPos1 = controllers[0].lastPosition;
-    var ControlPos2 = controllers[1].lastPosition;
-
-    var dir = ControlPos2.clone().sub(ControlPos1);
-
-    var len = dir.length();
-    dir = dir.normalize()
-    // .multiplyScalar(len * 0.5);
-    // var center = ControlPos1.clone().add(dir);
-    // this.debugEl.setAttribute('position', {
-    //   x: center.x,
-    //   y: center.y,
-    //   z: center.z
-    // });
-    // center.add(dir);
-    // this.debugEl.object3D.lookAt(center);
-
-    // var axisRotation = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1, 0, 0), dir.normalize());
-
-    // var camera = document.querySelector('a-entity[camera]');
-    // axisRotation.multiply(camera.object3D.quaternion);
-    // this.debugEl.object3D.quaternion.copy(axisRotation);
-
-
+    // find direction delta between two controllers.
+    var ControlPos1 = this.controllers[0].lastPosition;
+    var ControlPos2 = this.controllers[1].lastPosition;
+    var dir = ControlPos2.clone().sub(ControlPos1).normalize();
 
     // clone
     if (this.grabbed.length > 1) {
@@ -175,40 +121,38 @@ module.exports = {
     this.grabbed.forEach(function (grab) {
       if (grab.hand && grab.el) {
         var position = grab.hand.getAttribute('position');
+        var rotation = grab.hand.getAttribute('rotation');
         grab.el.setAttribute('position', position);
+        grab.el.setAttribute('rotation', rotation);
+
+        // el to local hand space
+        // on release, hand space to world space.
       }
     });
 
     // scale
     if (this.gripped.length > 1 && this.selected && !this.grabbed.length > 0) {
-      var controller1 = this.gripped[0];
-      var controller2 = this.gripped[1];
-      var controller1pos = controller1.getAttribute('position');
-      var controller2pos = controller2.getAttribute('position');
-      var controller1Vec = new THREE.Vector3(controller1pos.x, controller1pos.y, controller1pos.z);
-      var controller2Vec = new THREE.Vector3(controller2pos.x, controller2pos.y, controller2pos.z);
-
-
       var selected = this.selected;
 
       var detect = [{
-          direction: new THREE.Vector3(0, 0, 1),
-          name: 'z'
+          name: 'z',
+          direction: new THREE.Vector3(0, 0, 1)
         },{
-          direction: new THREE.Vector3(0, 1, 0),
-          name: 'y'
+          name: 'y',
+          direction: new THREE.Vector3(0, 1, 0)
         },{
-          direction: new THREE.Vector3(1, 0, 0),
-          name: 'x'
+          name: 'x',
+          direction: new THREE.Vector3(1, 0, 0)
         }];
+      var thresh = 0.8; // axis threshold
 
       // store original scale when grabbing element
       if (!this.scaleOrigin && !this.distanceOrigin) {
         this.scaleOrigin = selected.getAttribute('scale');
-        this.distanceOrigin = controller1Vec.distanceTo(controller2Vec);
+        this.distanceOrigin = ControlPos1.distanceTo(ControlPos2);
       }
 
-      var distanceChange = controller1Vec.distanceTo(controller2Vec) - this.distanceOrigin;
+      var distanceChange = ControlPos1.distanceTo(ControlPos2) - this.distanceOrigin;
 
       // apply scale to proper axis
       for (var i = 0; i < detect.length; i++) {
@@ -217,7 +161,7 @@ module.exports = {
         var selectedDir = axis.direction.applyQuaternion(selected.object3D.quaternion);
 
         var dot = dir.dot(selectedDir);
-        var thresh = 0.8;
+
         if (dot > thresh || dot < -thresh) {
           selected.setAttribute('scale', {
             [axis.name]: this.scaleOrigin[axis.name] + distanceChange
