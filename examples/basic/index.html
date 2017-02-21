@@ -5,20 +5,23 @@
     <script src="../build.js"></script>
   </head>
   <body>
-    <a-scene retain-camera>
-      <a-entity scale-axis>
+    <a-scene>
+      <a-entity cloneable>
 
 
         <!-- <a-sphere position="0 1 0" radius="0.2" color="#EF2D5E"></a-sphere>
         <a-cylinder position="1 0.75 1" radius="0.25" height="0.5" color="#FFC65D"></a-cylinder> -->
 
-        <!-- <a-box position="0 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#333333"></a-box>
-        <a-box position="0.3 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#4CC3D9"></a-box>
-        <a-box position="0.6 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#D75647"></a-box>
-        <a-box position="0.9 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#8ADE5C"></a-box> -->
+        <a-box axis position="0 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#333333"></a-box>
+        <a-box axis position="0.3 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#4CC3D9"></a-box>
+        <a-box axis position="0.6 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#D75647"></a-box>
+        <a-box axis position="0.9 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#8ADE5C"></a-box>
 
 
-        <a-box axis id="left" position="-0.5 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#4CC3D9">
+        <a-box axis id="debug" bb width="0.1" height="0.1" depth="0.1" color="red"></a-box>
+
+
+        <!-- <a-box axis id="left" position="-0.5 1 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="#4CC3D9">
           <a-animation attribute="position"
                dur="1000"
                direction="alternate"
@@ -34,7 +37,7 @@
                to="1.5 1 0"
                repeat="indefinite"></a-animation>
         </a-box>
-        <a-box axis id="target" position="0 0.5 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="red">
+        <a-box axis id="target" position="0 0.5 0" rotation="0 0 0" width="0.2" height="0.2" depth="0.2"  color="red"> -->
 
       </a-entity>
       <!-- <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane> -->
