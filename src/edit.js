@@ -10,7 +10,7 @@ module.exports = {
     this.controllers = controllers.map(function (controller) {
       return {
         el: controller,
-        lastPosition: new THREE.Vector3(), /* last position of controller */
+        position: new THREE.Vector3(), /* last position of controller */
         positionDelta: new THREE.Vector3() /* delta between current position and last position */
       }
     });
@@ -50,6 +50,11 @@ module.exports = {
       var objectBB = new THREE.Box3().setFromObject(mesh);
       var collision = handBB.intersectsBox(objectBB);
       if (collision) {
+        // make sure we are grabbing just one element.
+        self.grabbed = self.grabbed.filter(function (grab) {
+          return hand !== grab.hand;
+        });
+
         self.grabbed.push({ /* todo: could probably be in controllers array */
           hand: hand,
           el: el
@@ -63,6 +68,9 @@ module.exports = {
   onGripOpen: function (e) {
     var self = this;
     var hand = e.target;
+
+
+    this.checkMove();
 
     var ar = [];
     this.grabbed.forEach(function (grab) {
@@ -91,42 +99,63 @@ module.exports = {
   updateControllerPosition: function () {
     this.controllers.forEach(function (controller) {
       var position = controller.el.getAttribute('position');
-      controller.positionDelta.x = position.x - controller.lastPosition.x;
-      controller.positionDelta.y = position.y - controller.lastPosition.y;
-      controller.positionDelta.z = position.z - controller.lastPosition.z;
-      controller.lastPosition.x = position.x;
-      controller.lastPosition.y = position.y;
-      controller.lastPosition.z = position.z;
+      controller.positionDelta.x = position.x - controller.position.x;
+      controller.positionDelta.y = position.y - controller.position.y;
+      controller.positionDelta.z = position.z - controller.position.z;
+      controller.position.x = position.x;
+      controller.position.y = position.y;
+      controller.position.z = position.z;
     });
+  },
+
+  checkMove: function () {
+    this.grabbed.forEach(function (grab) {
+      if (grab.reParented) {
+        console.log('dropping');
+        grab.el.object3D.parent.updateMatrixWorld();
+        var position = new THREE.Vector3().setFromMatrixPosition(grab.el.object3D.matrixWorld);
+        var rotation = new THREE.Quaternion().setFromRotationMatrix(grab.el.object3D.matrixWorld);
+        grab.el.setAttribute('position', position);
+        grab.el.object3D.setRotationFromQuaternion(rotation);
+        //grab.reParented.add(grab.el.object3D);
+
+        grab.el.object3D.parent = grab.reParented;
+        grab.reParented = false;
+      };
+    })
   },
 
   tick: function (time) {
     this.updateControllerPosition();
 
     // find direction delta between two controllers.
-    var ControlPos1 = this.controllers[0].lastPosition;
-    var ControlPos2 = this.controllers[1].lastPosition;
-    var dir = ControlPos2.clone().sub(ControlPos1).normalize();
+    var controller1Position = this.controllers[0].position;
+    var controller2Position = this.controllers[1].position;
+    var dir = controller2Position.clone().sub(controller1Position).normalize();
 
     // clone
-    if (this.grabbed.length > 1) {
-      if (this.grabbed[0].el === this.grabbed[1].el) {
-        var copy = this.grabbed[0].el.cloneNode();
-        this.el.appendChild(copy);
-        this.grabbed[1].el = copy;
-      }
+    if (this.grabbed.length > 1 && this.grabbed[0].el === this.grabbed[1].el) {
+      this.grabbed[0].el.flushToDOM();
+      var copy = this.grabbed[0].el.cloneNode();
+      this.el.appendChild(copy);
+      this.grabbed[1].el = copy;
     };
 
     // move
     this.grabbed.forEach(function (grab) {
       if (grab.hand && grab.el) {
-        var position = grab.hand.getAttribute('position');
-        var rotation = grab.hand.getAttribute('rotation');
-        grab.el.setAttribute('position', position);
-        grab.el.setAttribute('rotation', rotation);
+        if (!grab.reParented) {
+          console.log('picking up');
+          grab.el.object3D.parent.updateMatrixWorld();
+          grab.reParented = grab.el.object3D.parent;
+          var handLocal = grab.hand.object3D.worldToLocal(grab.el.object3D.position);
+          grab.el.object3D.position = handLocal;
 
-        // el to local hand space
-        // on release, hand space to world space.
+          var handLocalRotation = grab.hand.object3D.quaternion.inverse().multiply(grab.el.object3D.quaternion);
+          grab.el.object3D.setRotationFromQuaternion(handLocalRotation);
+
+          grab.el.object3D.parent = grab.hand.object3D;
+        }
       }
     });
 
@@ -149,10 +178,10 @@ module.exports = {
       // store original scale when grabbing element
       if (!this.scaleOrigin && !this.distanceOrigin) {
         this.scaleOrigin = selected.getAttribute('scale');
-        this.distanceOrigin = ControlPos1.distanceTo(ControlPos2);
+        this.distanceOrigin = controller1Position.distanceTo(controller2Position);
       }
 
-      var distanceChange = ControlPos1.distanceTo(ControlPos2) - this.distanceOrigin;
+      var distanceChange = controller1Position.distanceTo(controller2Position) - this.distanceOrigin;
 
       // apply scale to proper axis
       for (var i = 0; i < detect.length; i++) {
