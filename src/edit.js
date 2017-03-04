@@ -69,7 +69,6 @@ module.exports = {
     var self = this;
     var hand = e.target;
 
-
     this.checkMove();
 
     var ar = [];
@@ -114,10 +113,17 @@ module.exports = {
         console.log('dropping');
         grab.el.object3D.parent.updateMatrixWorld();
         var position = new THREE.Vector3().setFromMatrixPosition(grab.el.object3D.matrixWorld);
-        var rotation = new THREE.Quaternion().setFromRotationMatrix(grab.el.object3D.matrixWorld);
+        var rotation = grab.el.object3D.getWorldQuaternion();
         grab.el.setAttribute('position', position);
         grab.el.object3D.setRotationFromQuaternion(rotation);
-        //grab.reParented.add(grab.el.object3D);
+        // todo: not practical to write to euler.  Too much error.
+
+        // var euler = new THREE.Euler().setFromRotationMatrix(grab.el.object3D.matrixWorld);
+        // grab.el.setAttribute('rotation', {
+        //   x: euler.x * (180 / Math.PI),
+        //   y: euler.y * (180 / Math.PI),
+        //   z: euler.z * (180 / Math.PI)
+        // })
 
         grab.el.object3D.parent = grab.reParented;
         grab.reParented = false;
@@ -146,8 +152,10 @@ module.exports = {
       if (grab.hand && grab.el) {
         if (!grab.reParented) {
           console.log('picking up');
+          // reparent grabbed object to hand.
           grab.el.object3D.parent.updateMatrixWorld();
           grab.reParented = grab.el.object3D.parent;
+
           var handLocal = grab.hand.object3D.worldToLocal(grab.el.object3D.position);
           grab.el.object3D.position = handLocal;
 
