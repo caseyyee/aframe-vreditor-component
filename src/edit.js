@@ -116,7 +116,7 @@ module.exports = {
         var rotation = grab.el.object3D.getWorldQuaternion();
         grab.el.setAttribute('position', position);
         grab.el.object3D.setRotationFromQuaternion(rotation);
-        // todo: not practical to write to euler.  Too much error.
+        // todo: not practical to write to euler.  Make & use matrix component instead.
 
         // var euler = new THREE.Euler().setFromRotationMatrix(grab.el.object3D.matrixWorld);
         // grab.el.setAttribute('rotation', {
@@ -141,8 +141,13 @@ module.exports = {
 
     // clone
     if (this.grabbed.length > 1 && this.grabbed[0].el === this.grabbed[1].el) {
+      console.log('cloning');
       this.grabbed[0].el.flushToDOM();
       var copy = this.grabbed[0].el.cloneNode();
+
+      var position = new THREE.Vector3().setFromMatrixPosition(this.grabbed[1].el.object3D.matrixWorld);
+      copy.setAttribute('position', position);
+
       this.el.appendChild(copy);
       this.grabbed[1].el = copy;
     };
@@ -150,7 +155,7 @@ module.exports = {
     // move
     this.grabbed.forEach(function (grab) {
       if (grab.hand && grab.el) {
-        if (!grab.reParented) {
+        if (!grab.reParented && grab.el.object3D.parent) {
           console.log('picking up');
           // reparent grabbed object to hand.
           grab.el.object3D.parent.updateMatrixWorld();
