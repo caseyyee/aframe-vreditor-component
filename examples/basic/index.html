@@ -21,8 +21,14 @@
       <!-- <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane> -->
 
       <!-- Hands -->
-      <a-entity hand-controls="left"></a-entity>
-      <a-entity hand-controls="right"></a-entity>
+      <a-entity hand-controls="left">
+        <a-box width="0.01" height="0.01" position="0 0 -0.1" depth="0.25" color="lightblue"></a-box>
+        <a-sphere id="pointer" radius="0.02" position="0 0 -0.25" color="darkblue"></a-box>
+      </a-entity>
+      <a-entity hand-controls="right">
+        <a-box width="0.01" height="0.01" position="0 0 -0.1" depth="0.25" color="lightblue"></a-box>
+        <a-sphere id="pointer" radius="0.02" position="0 0 -0.25" color="darkblue"></a-box>
+      </a-entity>
 
       <a-sky color="#333"></a-sky>
     </a-scene>

@@ -37,7 +37,10 @@ module.exports = {
   onGripClose: function (e) {
     var self = this;
     var hand = e.target;
-    var hand3D = e.target.object3D;
+
+    var point = e.target.querySelector('#pointer');
+
+    var hand3D = point.object3D ? point.object3D : e.target.object3D;
     var handBB = new THREE.Box3().setFromObject(hand3D);
 
     var els = Array.prototype.slice.call(this.el.children);
