@@ -147,9 +147,14 @@ module.exports = {
       console.log('cloning');
       this.grabbed[0].el.flushToDOM();
       var copy = this.grabbed[0].el.cloneNode();
+      var world = this.grabbed[0].el.object3D.matrixWorld;
+      var rotation = this.grabbed[0].el.object3D.getWorldQuaternion();
+      var position = new THREE.Vector3().setFromMatrixPosition(world);
 
-      var position = new THREE.Vector3().setFromMatrixPosition(this.grabbed[1].el.object3D.matrixWorld);
-      copy.setAttribute('position', position);
+      copy.addEventListener('loaded', function () {
+        copy.object3D.setRotationFromQuaternion(rotation);
+        copy.setAttribute('position', position);
+      })
 
       this.el.appendChild(copy);
       this.grabbed[1].el = copy;
